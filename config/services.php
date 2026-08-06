@@ -35,4 +35,8 @@ return [
         ],
     ],
 
+    'inegi' => [
+        'base_url' => env('INEGI_CATALOGO_BASE_URL', 'https://gaia.inegi.org.mx/wscatgeo/v2'),
+    ],
+
 ];
