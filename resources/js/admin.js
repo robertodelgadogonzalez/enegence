@@ -41,6 +41,64 @@ function formatUltimaActualizacion(isoDate) {
     }).format(date);
 }
 
+function initMunicipiosModal(tableEl) {
+    const template = tableEl?.dataset.municipiosTemplate;
+    const modalEl = document.getElementById('municipios-modal');
+
+    if (!template || !modalEl) return;
+
+    const modal = new bootstrap.Modal(modalEl);
+    const tituloEl = document.getElementById('municipios-modal-titulo');
+    const loadingEl = document.getElementById('municipios-loading');
+    const errorEl = document.getElementById('municipios-error');
+    const tableMunicipiosEl = document.getElementById('municipios-table');
+    const tbody = tableMunicipiosEl.querySelector('tbody');
+
+    tableEl.addEventListener('click', async (event) => {
+        const row = event.target.closest('tr[data-cve-ent]');
+        if (!row) return;
+
+        const cveEnt = row.dataset.cveEnt;
+        const nombreEstado = row.cells[1]?.textContent.trim() ?? '';
+
+        tituloEl.textContent = `Municipios de ${nombreEstado}`;
+        tbody.innerHTML = '';
+        tableMunicipiosEl.classList.add('d-none');
+        errorEl.classList.add('d-none');
+        loadingEl.classList.remove('d-none');
+        modal.show();
+
+        try {
+            const response = await fetch(template.replace('CVE_ENT', cveEnt), {
+                headers: { Accept: 'application/json' },
+            });
+
+            const payload = await response.json();
+
+            if (!response.ok) {
+                throw new Error(payload.message || 'No fue posible consultar los municipios.');
+            }
+
+            payload.data.forEach((municipio) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${municipio.cve_mun}</td>
+                    <td>${municipio.nomgeo}</td>
+                    <td>${municipio.pob_total}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            tableMunicipiosEl.classList.remove('d-none');
+        } catch (error) {
+            errorEl.textContent = error.message;
+            errorEl.classList.remove('d-none');
+        } finally {
+            loadingEl.classList.add('d-none');
+        }
+    });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     const tableEl = document.getElementById('estados-table');
     let dataTable = null;
@@ -59,8 +117,14 @@ document.addEventListener('DOMContentLoaded', () => {
             language: {
                 url: 'https://cdn.datatables.net/plug-ins/2.1.8/i18n/es-MX.json',
             },
+            createdRow(row, data) {
+                row.dataset.cveEnt = data.cve_ent;
+                row.style.cursor = 'pointer';
+            },
         });
     }
+
+    initMunicipiosModal(tableEl);
 
     const syncButtons = document.querySelectorAll('[data-sync-estados]');
 
