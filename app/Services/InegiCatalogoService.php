@@ -23,6 +23,14 @@ class InegiCatalogoService
         return $this->fetch('/mgee/');
     }
 
+    /**
+     * Municipios de una entidad federativa.
+     */
+    public function municipios(string $cveEnt): Collection
+    {
+        return $this->fetch("/mgem/{$cveEnt}");
+    }
+
     private function fetch(string $path): Collection
     {
         $response = Http::timeout(15)
