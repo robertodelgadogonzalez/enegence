@@ -1,0 +1,102 @@
+@import 'bootstrap/dist/css/bootstrap.min.css';
+@import 'datatables.net-bs5';
+@import '@fortawesome/fontawesome-free/css/all.min.css';
+
+:root {
+    --enegence-verde: #abbf15;
+    --enegence-azul: #2c4384;
+    --enegence-azul-footer: #364586;
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
+    background-color: #f4f5f7;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main {
+    flex: 1 0 auto;
+}
+
+.enegence-topbar {
+    background-color: var(--enegence-verde);
+    color: #fff;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.enegence-topbar .navbar-user {
+    color: #fff;
+    font-weight: 600;
+}
+
+.enegence-header {
+    background-color: #fff;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.enegence-header .logo {
+    height: 42px;
+}
+
+.enegence-nav .nav-link {
+    color: #444;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+}
+
+.enegence-nav .nav-link.active {
+    color: var(--enegence-azul);
+    border-bottom: 2px solid var(--enegence-azul);
+}
+
+.enegence-footer {
+    background-color: var(--enegence-azul-footer);
+    color: #fff;
+    padding: 1.5rem 0;
+    flex-shrink: 0;
+}
+
+.enegence-footer .logo {
+    height: 32px;
+}
+
+.btn-enegence {
+    background-color: var(--enegence-azul);
+    border-color: var(--enegence-azul);
+    color: #fff;
+}
+
+.btn-enegence:hover {
+    background-color: #24356b;
+    border-color: #24356b;
+    color: #fff;
+}
+
+/* El tema bs5 de DataTables separa el título y el ícono de orden con
+   space-between, así que en columnas anchas el ícono termina lejos del
+   texto. Lo pegamos junto al título en vez de al borde de la columna. */
+#estados-table .dt-column-header {
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 0.4rem;
+}
+
+#estados-table .dt-column-title {
+    flex-grow: 0;
+}
+
+/* DataTables detecta "Población total" como columna numérica y la alinea a
+   la derecha por defecto (clase dt-type-numeric); la queremos a la izquierda
+   igual que el resto de las columnas. */
+#estados-table td.dt-type-numeric,
+#estados-table th.dt-type-numeric {
+    text-align: left;
+}
